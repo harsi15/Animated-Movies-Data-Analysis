@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -18,10 +19,8 @@ public class MovieController {
 
     @Autowired
     private MovieService movieService;
+    private MovieRepository movieRepository;
 
-//    @GetMapping("/themes")
-//    public List<?> findCommonThemes() {
-//        return movieService.findCommonThemes();
 
         @GetMapping
         public ResponseEntity<List<Movie>> getAllMovies()
@@ -32,4 +31,13 @@ public class MovieController {
         public ResponseEntity<Optional<Movie>> getSingleMovie(@PathVariable String imdbId) {
             return new ResponseEntity<Optional<Movie>>(movieService.singleMovie(imdbId),HttpStatus.OK);
         }
+
+    @GetMapping("/tagline-themes-by-genre")
+    public ResponseEntity<Map<String, List<String>>> getTaglineThemesByGenre() {
+        Map<String, List<String>> themes = movieService.analyzeTaglinesByGenre();
+        return new ResponseEntity<>(themes, HttpStatus.OK);
+    }
+
+
+
 }
