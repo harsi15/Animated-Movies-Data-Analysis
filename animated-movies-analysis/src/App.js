@@ -1,38 +1,44 @@
 import './App.css';
 import api from './api/axiosConfig';
-import {useState, useEffect} from 'react';
-import Layout from './components/Layout';
-import {Routes, Route} from "react-router-dom";
-import Home from './components/home/Home';
+import { useState, useEffect } from 'react';
+
 
 function App() {
+  const [movies, setMovies] = useState([]);
 
-  const [movies, setMovies] = useState();
-
-  const getMovies = async() =>{
-    try{
-
-      const response = await api.get("/api/queries/1");
-      //console.log(response.data);
-      setMovies(response.data);
-
-    }catch(err){
-      console.log(err);
-    }
-    
-  }
-
-  useEffect(()=>{
-    getMovies();
-  },[])
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await api.get("/movies");
+        setMovies(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
-    <div className="App">
-      <Routes>
-        <Route path="/" element={<Layout/>}/>
-        <Route path="/" element={<Home/>}></Route>
-        
-      </Routes>
+    <div className="background">
+
+      <h3 className="subheading">Movies Grid</h3>
+      <div className="movies-grid">
+        {movies.map((movie, index) => (
+          <div className="movie-item" key={index}>
+            <img
+              src={`https://image.tmdb.org/t/p/w500${movie.backdrop_path}`}
+              alt={movie.title}
+            />
+            <div className="movie-details">
+              <strong>{movie.title}</strong>
+              {movie.genres.map((genre, genreIndex) => (
+                <p key={genreIndex}>{genre}</p>
+              ))}
+              <p>Rating: {movie.vote_average} ({movie.vote_count})</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

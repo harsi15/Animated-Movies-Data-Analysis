@@ -1,0 +1,59 @@
+*{
+    box-sizing: border-box;
+    font-family: 'Quicksand', Arial, Helvetica, sans-serif;
+  }
+  body{
+    padding:0;
+    margin:0;
+  }
+  .Query1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    
+    min-height: 100vh;
+    background-color: #081b27;
+    color:white;
+    font-weight: 500;
+  }
+
+  .query1Title{
+    align-items: center;
+    
+    min-height: 100vh;
+    
+    font-weight: 500;
+  }
+  .barchart{
+    color: black;
+  }
+
+  .wordcloud{
+    color: white;
+  }
+  .queryHeading{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+  }
+
+  .navbartop{
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  background-color: #081b27;
+  
+  }
+  a.navbar-brand{
+    color: white;
+  }
+  
+  a.nav-link{
+    color: white;
+  }

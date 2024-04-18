@@ -1,48 +1,32 @@
-package db.project.animatedMovies;
-import db.project.animatedMovies.Movie;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.trees.Tree;
-import opennlp.tools.stemmer.PorterStemmer;
+package com.SSTDevelopers.animatedMovies;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import opennlp.tools.tokenize.SimpleTokenizer;
-import org.bson.types.ObjectId;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.ProjectionOperation;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import edu.stanford.nlp.pipeline.*;
-import edu.stanford.nlp.ling.*;
-import edu.stanford.nlp.neural.rnn.RNNCoreAnnotations;
-import edu.stanford.nlp.sentiment.SentimentCoreAnnotations;
-import org.ejml.simple.SimpleMatrix;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import java.util.Properties;
-
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 
 @Service
 public class MovieService {
     @Autowired
     private MovieRepository movieRepository;
-    public List<Movie> allMovies(){
+
+    public List<Movie> allMovies() {
         return movieRepository.findAll();
     }
-    public Optional<Movie> singleMovie(String imdbId)
-    {
+
+    public Optional<Movie> singleMovie(String imdbId) {
         return movieRepository.findMovieByImdbId(imdbId);
     }
 
+    public Optional<Movie> singleMovieByTitle(String title) {
+        return movieRepository.findMovieByTitle(title);
+    }
 
     public Map<String, List<String>> analyzeTaglinesByGenre() {
         List<Movie> movies = movieRepository.findAll();
@@ -55,7 +39,7 @@ public class MovieService {
         // Create a map to hold genres and associated taglines
         Map<String, List<String>> genreTaglines = new HashMap<>();
         for (Movie movie : movies) {
-            for (String genre : movie.getGenres()) {
+            for (String genre : movie.getGenre()) {
                 genreTaglines.computeIfAbsent(genre, k -> new ArrayList<>()).add(movie.getTagline());
             }
         }
@@ -66,7 +50,7 @@ public class MovieService {
             Map<String, Integer> wordFrequency = new HashMap<>();
             taglines.stream()
                     .filter(Objects::nonNull)
-                    .flatMap(tagline -> Stream.of(tokenizer.tokenize(tagline.toLowerCase())))
+                    .flatMap(tagline -> Arrays.stream(tokenizer.tokenize(tagline.toLowerCase())))
                     .filter(token -> !stopwords.contains(token) && token.trim().length() > 0)
                     .forEach(token -> wordFrequency.put(token, wordFrequency.getOrDefault(token, 0) + 1));
 
@@ -81,5 +65,16 @@ public class MovieService {
 
         return genreCommonWords;
     }
-}
 
+    public List<Object> taglineImpactOnRevenue() {
+        return movieRepository.getRevenueBasedOnGenre();
+    }
+
+    public List<Object> runtimeAnalysisPipeline() {
+        return movieRepository.getRuntimeAnalysisPipeline();
+    }
+
+    public List<Object> storytellingPatterns() {
+        return movieRepository.getStorytellingPatterns();
+    }
+}

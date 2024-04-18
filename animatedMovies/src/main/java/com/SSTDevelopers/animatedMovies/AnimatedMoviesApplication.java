@@ -1,4 +1,4 @@
-package db.project.animatedMovies;
+package com.SSTDevelopers.animatedMovies;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
