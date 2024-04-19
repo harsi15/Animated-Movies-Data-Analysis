@@ -1,4 +1,4 @@
-package db.project.animatedMovies;
+package com.SSTDevelopers.animatedMovies;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,22 +24,33 @@ public class Movie {
 //    private String recordId;
     private String title;
     private List<String> genres;
+
+    private List<String> production_companies;
     private String overview;
     private String tagline;
     private Double revenue;
     private Double vote_average;
+
+    private Integer vote_count;
+    private String backdrop_path;
     private Integer runtime;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date release_date;
     private Double popularity;
     private Double sentiment;
 
-    public Movie(String title, int runtime, Date release_date, double vote_average, String overview) {
+    public Movie(String title, int runtime, Date release_date, double vote_average, String overview, String backdrop_path, Integer vote_count, List<String> genres, List<String> production_companies, double popularity) {
         this.title = title;
         this.runtime = runtime;
         this.release_date = release_date;
         this.vote_average = vote_average;
         this.overview = overview;
+        this.backdrop_path = backdrop_path;
+        this.vote_count = vote_count;
+        this.genres = genres;
+        this.production_companies = production_companies;
+        this.popularity = popularity;
     }
 
     public String getTitle() {
@@ -98,8 +109,39 @@ public class Movie {
     public Double getRevenue() {
         return revenue;
     }
+    public String getBackdrop_path() {
+        return backdrop_path;
+    }
+
+    public void setBackdrop_path(String backdrop_path) {
+        this.backdrop_path = backdrop_path;
+    }
 
     public void setRevenue(Double revenue) {
         this.revenue = revenue;
+    }
+
+    public Integer getVote_count() {
+        return vote_count;
+    }
+
+    public void setVote_count(Integer vote_count) {
+        this.vote_count = vote_count;
+    }
+
+    public List<String> getProduction_companies() {
+        return production_companies;
+    }
+
+    public void setProduction_companies(List<String> production_companies) {
+        this.production_companies = production_companies;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
     }
 }

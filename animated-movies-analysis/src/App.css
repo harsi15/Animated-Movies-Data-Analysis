@@ -1,38 +1,100 @@
-.App {
-  text-align: center;
-}
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+*{
+  box-sizing: border-box;
+  font-family: 'Quicksand', Arial, Helvetica, sans-serif;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body{
+  padding:0;
+  margin:0;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.navbartop{
+  
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  justify-content: space-between;
+  align-items: flex-start;
+background-color: #081b27;
+
+}
+a.navbar-brand{
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+a.nav-link{
+  color: white;
+}
+.App{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 30px;
+  background-color: #081b27;
+  color:white;
+  font-weight: 500;
+  
+}
+.background{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #081b27;
+  color:white;
+  font-weight: 500;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.subheading{
+  display: flex;
+  text-align: left;
+  align-items:start;
+}
+
+.toggleButton{
+  justify-content: space-between;
+  display: flex;
+  margin: 5px;
+}
+
+.dropdownButton{
+  display: flex;
+  text-align: right;
+  align-items:end;
+  justify-content: space-around;
+}
+
+.movies-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.dropdown-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
+.movie-item {
+  flex: 0 0 calc(20% - 20px);
+  margin: 10px;
+  border: 1px solid #418edc;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.movie-item img {
+  width: 100%;
+  height: auto;
+}
+
+.movie-details {
+  margin-top: 10px;
+}
+
+.movie-details strong {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.movie-details p {
+  margin: 0;
 }
