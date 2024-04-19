@@ -44,14 +44,33 @@ a.nav-link{
 }
 
 .subheading{
+  display: flex;
   text-align: left;
-  align-items:center;
+  align-items:start;
 }
+
+.toggleButton{
+  justify-content: space-between;
+  display: flex;
+  margin: 5px;
+}
+
+.dropdownButton{
+  display: flex;
+  text-align: right;
+  align-items:end;
+  justify-content: space-around;
+}
+
 .movies-grid {
   display: flex;
   flex-wrap: wrap;
 }
 
+.dropdown-container {
+  display: flex;
+  align-items: center; /* Align items vertically */
+}
 .movie-item {
   flex: 0 0 calc(20% - 20px);
   margin: 10px;

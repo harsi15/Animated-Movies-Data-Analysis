@@ -1,51 +1,113 @@
 import React, { useState, useEffect } from 'react';
 import './Query.css';
 import api from './api/axiosConfig';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import WordCloud from 'react-wordcloud';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const Query4 = () => {
-  const [runtimeData, setRuntimeData] = useState([]);
+const Query3 = () => {
+  const [taglineData, setTaglineData] = useState([]);
+  const [barChartData, setBarChartData] = useState([]);
 
   useEffect(() => {
-    const fetchRuntimeData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get("/movies/getRuntimeAnalysisPipeline");
-        setRuntimeData(response.data);
-      } catch (error) {
-        console.log(error);
+        const response = await api.get("/movies/getGenrefromTaglines");
+        console.log(response.data);
+
+        // Extract tagline data for word cloud
+        const taglines = response.data.map(movie => movie.taglines).flat();
+        const taglineCounts = {};
+        taglines.forEach(tagline => {
+          if (taglineCounts[tagline]) {
+            taglineCounts[tagline]++;
+          } else {
+            taglineCounts[tagline] = 1;
+          }
+        });
+        const wordCloudData = Object.keys(taglineCounts).map(tagline => ({
+          text: tagline,
+          value: taglineCounts[tagline],
+        }));
+        setTaglineData(wordCloudData);
+
+        // Extract data for bar chart and convert popularity to percentage
+        const barChartData = response.data.map(movie => {
+          // Convert popularity to percentage
+          let popularityPercent = (movie.averagePopularity / 10); // Convert popularity to percentage
+          if (popularityPercent > 100) popularityPercent = 100; // Limit popularity to 100
+
+          return {
+            genres: movie.genres,
+            taglineCount: movie.taglines.length,
+            popularity: popularityPercent,
+          };
+        });
+        setBarChartData(barChartData);
+      } catch (err) {
+        console.log(err);
       }
     };
-    fetchRuntimeData();
+    fetchData();
   }, []);
 
   return (
     <div className='query1Title'>
       <h1 className="queryHeading">Query 3</h1>
-      <p className="queryHeading">Discover Trends in Movie Runtime Over the Years</p>
-      
+      <h3 className="queryHeading">Unveiling Popularity and Shared Traits in Movie Taglines Across Various Genres</h3>
+
       <div className="chart-container">
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart
-            data={runtimeData}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
+        {/* Word Cloud */}
+        <div className="word-cloud-container">
+          <WordCloud
+            words={taglineData}
+            options={{
+              fontSizes: [20, 60], // Set font size range
+              rotations: 0,
+              rotationAngles: [0, 0],
+              scale: 'sqrt',
+              spiral: 'archimedean',
             }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="_id" />
-            <YAxis yAxisId="left" />
-            <YAxis yAxisId="right" orientation="right" />
-            <Tooltip />
-            <Line type="monotone" dataKey="averageRuntime" stroke="#8884d8" yAxisId="left" />
-            <Line type="monotone" dataKey="averageRating" stroke="#82ca9d" yAxisId="right" />
-          </LineChart>
-        </ResponsiveContainer>
+          />
+        </div>
+
+        {/* Bar Chart */}
+        <div className="bar-chart-container">
+          <ResponsiveContainer width="100%" height={400}>
+            <BarChart
+              data={barChartData}
+              margin={{
+                top: 5,
+                right: 30,
+                left: 20,
+                bottom: 5,
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="genres" />
+              <YAxis />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar dataKey="popularity" fill="#82ca9d" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
 };
 
-export default Query4;
+// Custom Tooltip Component
+const CustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="custom-tooltip">
+        <p>{`${data.genres}`}</p>
+        <p>{`Popularity: ${data.popularity} %`}</p>
+        <p>{`Tagline Count: ${data.taglineCount}`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+export default Query3;

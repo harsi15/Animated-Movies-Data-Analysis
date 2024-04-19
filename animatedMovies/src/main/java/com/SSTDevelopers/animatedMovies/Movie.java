@@ -24,6 +24,8 @@ public class Movie {
 //    private String recordId;
     private String title;
     private List<String> genres;
+
+    private List<String> production_companies;
     private String overview;
     private String tagline;
     private Double revenue;
@@ -38,7 +40,7 @@ public class Movie {
     private Double popularity;
     private Double sentiment;
 
-    public Movie(String title, int runtime, Date release_date, double vote_average, String overview, String backdrop_path, Integer vote_count, List<String> genres) {
+    public Movie(String title, int runtime, Date release_date, double vote_average, String overview, String backdrop_path, Integer vote_count, List<String> genres, List<String> production_companies, double popularity) {
         this.title = title;
         this.runtime = runtime;
         this.release_date = release_date;
@@ -47,6 +49,8 @@ public class Movie {
         this.backdrop_path = backdrop_path;
         this.vote_count = vote_count;
         this.genres = genres;
+        this.production_companies = production_companies;
+        this.popularity = popularity;
     }
 
     public String getTitle() {
@@ -123,5 +127,21 @@ public class Movie {
 
     public void setVote_count(Integer vote_count) {
         this.vote_count = vote_count;
+    }
+
+    public List<String> getProduction_companies() {
+        return production_companies;
+    }
+
+    public void setProduction_companies(List<String> production_companies) {
+        this.production_companies = production_companies;
+    }
+
+    public Double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(Double popularity) {
+        this.popularity = popularity;
     }
 }

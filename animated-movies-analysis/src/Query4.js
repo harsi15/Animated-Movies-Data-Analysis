@@ -1,52 +1,77 @@
 import React, { useState, useEffect } from 'react';
 import './Query.css';
 import api from './api/axiosConfig';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import WordCloud from 'react-wordcloud';
 
-const Query2 = () => {
-  const [movies, setMovies] = useState([]);
+const Query4 = () => {
+  const [genresData, setGenresData] = useState([]);
 
   useEffect(() => {
-    const getMovies = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get("/movies/taglineImpactOnRevenue");
+        const response = await api.get("/movies/getStorytellingPatterns");
         console.log(response.data);
-        setMovies(response.data);
-      } catch (err) {
-        console.log(err);
+        setGenresData(response.data);
+      } catch (error) {
+        console.log(error);
       }
-    }
-    getMovies();
+    };
+
+    fetchData();
   }, []);
 
   return (
-    <div className='query1Title'>
-      <h1 className="queryHeading">Query 2</h1>
-      <p className="queryHeading">Assess Tagline Impact on Revenue Across Genres</p>
-      
-      <div className="chart-container">
-        <ResponsiveContainer width="100%" height={400}>
-          <BarChart
-            width={500}
-            height={300}
-            data={movies}
-            margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="genres" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="average_revenue" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
+    <div className="query1Title">
+    <h1 className="queryHeading">Query 4</h1>
+      <h3 className="queryHeading">Explore Genre-Specific Storytelling Patterns in Overviews and Taglines</h3>
+      <div className="word-cloud-container">
+        {genresData.map((genreData) => (
+          <div key={genreData._id}>
+            <h4 className="queryHeading">{genreData.genre}</h4>
+            <WordCloud
+              words={getWordCloudData(genreData)}
+              options={{
+                rotations: 0,
+                rotationAngles: [0, 0],
+                scale: 'sqrt',
+                spiral: 'archimedean',
+              }}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default Query2;
+const getWordCloudData = (genreData) => {
+  const wordCloudData = [];
+
+  // Add narrative structures
+  genreData.narrativeStructures.forEach((text) => {
+    const words = text.split(" ");
+    words.forEach((word) => {
+      wordCloudData.push({ text: word, value: 5 });
+    });
+  });
+
+  // Add plot elements
+  genreData.plotElements.forEach((text) => {
+    const words = text.split(" ");
+    words.forEach((word) => {
+      wordCloudData.push({ text: word, value: 3 });
+    });
+  });
+
+  // Add thematic motifs
+  genreData.thematicMotifs.forEach((text) => {
+    const words = text.split(" ");
+    words.forEach((word) => {
+      wordCloudData.push({ text: word, value: 2 });
+    });
+  });
+
+  return wordCloudData;
+};
+
+export default Query4;

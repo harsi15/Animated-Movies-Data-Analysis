@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import WordCloud from 'react-wordcloud';
 import './Query.css';
 import api from './api/axiosConfig';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
-
-const Query2 = () => {
-  const [movies, setMovies] = useState();
+const Query1 = () => {
+  const [movies, setMovies] = useState([]);
 
   useEffect(() => {
     const getMovies = async () => {
       try {
-        const response = await api.get("/movies/tagline-themes-by-genre");
-        console.log(response.data);
+        const response = await api.get("/movies/taglineImpactOnRevenue");
         setMovies(response.data);
       } catch (err) {
         console.log(err);
@@ -21,58 +18,55 @@ const Query2 = () => {
     getMovies();
   }, []);
 
-  const wordCounts = {};
-
-  if (movies) {
-    Object.values(movies).forEach(genreWords => {
-      genreWords.forEach(word => {
-        wordCounts[word] = (wordCounts[word] || 0) + 1;
-      });
-    });
-  }
-
-  const words2 = Object.entries(wordCounts).map(([word, count]) => ({
-    text: word,
-    value: count
-  }));
-
-  const options = {
-    fontSizes: [20, 60], // Set font size range
-    fontWeight: 'bold', // Set font weight to bold
-    // You can customize other options here, such as width, height, colors, etc.
-  };
-
   return (
-    
     <div className='query1Title'>
-      
       <h1 className="queryHeading">Query 1</h1>
-      <p className="queryHeading">Discover Common Themes in Movie Taglines Across Genres</p>
-
-      <div  style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        {/* Display WordCloud */}
-        <div className="wordcloud" style={{ width: '50%', height: '600px' }}>
-          <WordCloud words={words2} options={options} />
-        </div>
-
-        {/* Display BarChart */}
-        <div className="barchart" style={{ width: '50%', height: '300px' }}>
+      <h3 className="queryHeading">Investigating Revenue, Budget, and Their Discrepancies Across Genres Alongside Tagline Count</h3>
+      <br></br>
+      <div className="chart-container">
+        <ResponsiveContainer width="100%" height={400}>
           <BarChart
-            width={700}
+            width={500}
             height={300}
-            data={words2}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+            data={movies}
+            margin={{
+              top: 5,
+              right: 70,
+              left: 75,
+              bottom: 70, // Increased bottom margin to accommodate tooltip
+            }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="text" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="value" fill="#8884d8" />
+            <XAxis dataKey="genres" label={{ value: 'Genres', position: 'insideBottom', offset: -50 }} />
+            <YAxis label={{ value: 'Amount', angle: -90, position: 'insideLeft', offset: -55 }} />
+            <Tooltip
+              content={({ payload, label }) => {
+                if (payload && payload[0] && payload[0].payload) {
+                  const { average_revenue, average_budget, tagline_count } = payload[0].payload;
+                  const revenue = parseFloat(average_revenue);
+                  const budget = parseFloat(average_budget);
+                  const difference = (revenue - budget).toFixed(2);
+                  return (
+                    <div className="custom-tooltip">
+                      <p className="genre">{`Genre: ${label}`}</p>
+                      <p className="revenue">{`Average Revenue: $${average_revenue}`}</p>
+                      <p className="budget">{`Average Budget: $${average_budget}`}</p>
+                      <p className="difference">{`Difference (Revenue - Budget): $${difference}`}</p>
+                      <p className="tagline">{`Tagline Count: ${tagline_count}`}</p>
+                    </div>
+                  );
+                }
+                return null;
+              }}
+            />
+            <Bar dataKey="average_budget" stackId="stack" fill="#82ca9d" />
+            <Bar dataKey="average_revenue" stackId="stack" fill="#8884d8" />
+            <Legend />
           </BarChart>
-        </div>
+        </ResponsiveContainer>
       </div>
     </div>
   );
 };
 
-export default Query2;
+export default Query1;

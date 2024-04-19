@@ -71,10 +71,26 @@ public class MovieService {
     }
 
     public List<Object> runtimeAnalysisPipeline() {
-        return movieRepository.getRuntimeAnalysisPipeline();
+        return movieRepository.getRuntimeAndTaglineAnalysisPipeline();
     }
 
     public List<Object> storytellingPatterns() {
         return movieRepository.getStorytellingPatterns();
+    }
+
+    public List<Object> genrefromTaglines(){
+        return movieRepository.getGenrefromTaglines();
+    }
+
+    public List<Object> filterBasedOnGenre(String genre) {
+        return movieRepository.getFilterBasedOnGenre(genre);
+    }
+
+    public List<Object> filterBasedOnProduction(String production_company){
+        return movieRepository.getFilterBasedOnProduction(production_company);
+    }
+
+    public List<Object> genresBasedOnSentiment(){
+        return movieRepository.getGenresBasedOnSentiment();
     }
 }
