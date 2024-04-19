@@ -21,7 +21,7 @@ const Query1 = () => {
   return (
     <div className='query1Title'>
       <h1 className="queryHeading">Query 1</h1>
-      <h3 className="queryHeading">Investigating Revenue, Budget, and Their Discrepancies Across Genres Alongside Tagline Count</h3>
+      <h3 className="queryHeading">Comparing Revenue and Budget across Genres with Tagline count</h3>
       <br></br>
       <div className="chart-container">
         <ResponsiveContainer width="100%" height={400}>

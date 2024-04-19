@@ -39,11 +39,11 @@ public interface MovieRepository extends MongoRepository<Movie, String> {
     //Query 1
     public default List<Object> getRevenueBasedOnGenre() {
         List<Document> pipeline = new ArrayList<>();
-        pipeline.add(new Document("$match", new Document("tagline", new Document("$ne", null))
+        pipeline.add(new Document("$match", new Document("tagline", new Document("$ne", null))              //match
                 .append("revenue", new Document("$ne", null))
                 .append("budget", new Document("$ne", null))
                 .append("genres", new Document("$ne", null))));
-        pipeline.add(new Document("$group", new Document("_id", "$genres")
+        pipeline.add(new Document("$group", new Document("_id", "$genres")                                  //group
                 .append("average_revenue", new Document("$avg",
                         new Document("$convert", new Document("input", "$revenue")
                                 .append("to", "double")
@@ -55,12 +55,12 @@ public interface MovieRepository extends MongoRepository<Movie, String> {
                                 .append("onError", 0L)
                                 .append("onNull", 0L))))
                 .append("tagline_count", new Document("$sum", 1L))));
-        pipeline.add(new Document("$project", new Document("_id", 0L)
+        pipeline.add(new Document("$project", new Document("_id", 0L)                                       //Project
                 .append("genres", "$_id")
                 .append("average_revenue", 1L)
                 .append("average_budget", 1L)
                 .append("tagline_count", 1L)));
-        pipeline.add(new Document("$sort", new Document("average_revenue", -1L)));
+        pipeline.add(new Document("$sort", new Document("average_revenue", -1L)));                          //Sort
 
         return movieCollection.aggregate(pipeline).into(new ArrayList<>());
     }
@@ -183,7 +183,7 @@ public interface MovieRepository extends MongoRepository<Movie, String> {
     }
 
 
-    //Query 6
+    //Query 5
     public default List<Object> getGenresBasedOnSentiment() {
         List<Document> pipeline = Arrays.asList(
                 // Project stage
